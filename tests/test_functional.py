@@ -3,13 +3,20 @@ import subprocess
 import os
 import shutil
 import json 
+import pytest
 
 # Helper functions
-def clear_output_dir(directory="output"):
-    """Helper to clear and recreate output directory"""
-    if os.path.exists(directory):
-        shutil.rmtree(directory)
-    os.makedirs(directory)
+@pytest.fixture(autouse=True)
+def setup_output_directory():
+    """Helper to clear and recreate output directory before each test"""
+    if os.path.exists("output"):
+        shutil.rmtree("output")
+    os.makedirs("output")
+
+    yield 
+    for f in ["./data/test_messages.csv", "./data/test_contacts.csv"]:
+        if os.path.exists(f):
+            os.remove(f)
 
 def create_test_csv(filename, content):
     """Helper to create test CSV files"""
@@ -24,7 +31,6 @@ def load_json_file(filepath):
 
 # Test cases
 def test_F01_nominal_execution():
-    clear_output_dir("output")
     result = subprocess.run(
         ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
         capture_output=True
@@ -38,7 +44,6 @@ def test_F01_nominal_execution():
 
 
 def test_F02_file_uniqueness():
-    clear_output_dir("output")
     result = subprocess.run(
         ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
         capture_output=True
@@ -53,7 +58,6 @@ def test_F02_file_uniqueness():
 
 
 def test_F03_default_direction_value():
-    clear_output_dir("output")
     messages_csv = """id,datetime,direction,content,contact
 cd19a0a2-b73c-4ba1-82ae-89d06dc457c5,1770050099,,Test message F03,1001"""
     
@@ -75,14 +79,10 @@ cd19a0a2-b73c-4ba1-82ae-89d06dc457c5,1770050099,,Test message F03,1001"""
     data = load_json_file(json_file)
 
     assert data["direction"] == "originating"
-    
-    os.remove("./data/test_messages.csv")
-    os.remove("./data/test_contacts.csv")
 
 
 
 def test_F04_file_naming_convention():
-    clear_output_dir("output")
     messages_csv = """id,datetime,direction,content,contact
 be5792c2-1c1f-409f-9ac8-27a126efa091,1770050097,originating,Test message F04,1002"""
     
@@ -99,14 +99,9 @@ be5792c2-1c1f-409f-9ac8-27a126efa091,1770050097,originating,Test message F04,100
     
     expected_filename = "be5792c2-1c1f-409f-9ac8-27a126efa091.json"
     assert expected_filename in os.listdir("output")
-    
-    os.remove("./data/test_messages.csv")
-    os.remove("./data/test_contacts.csv")
 
 
 def test_F05_json_structure_integrity():
-    clear_output_dir("output")
-
     result = subprocess.run(
         ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
         capture_output=True
@@ -126,8 +121,6 @@ def test_F05_json_structure_integrity():
 
 
 def test_F06_id_accuracy():
-    clear_output_dir("output")
-
     result = subprocess.run(
         ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
         capture_output=True
@@ -146,8 +139,6 @@ def test_F06_id_accuracy():
 
 
 def test_F07_date_format_conversion():
-    clear_output_dir("output")
-
     messages_csv = """id,datetime,direction,content,contact
 bccfe3e5-f89d-4859-ad53-dea6f556cf28,1770050100,originating,Test message F07,1009"""
     
@@ -168,14 +159,9 @@ bccfe3e5-f89d-4859-ad53-dea6f556cf28,1770050100,originating,Test message F07,100
     # 1770050100 corresponds to 2026-02-02T16:35:00 UTC (checked with an epoch converter)
     expected_datetime = "2026-02-02T16:35:00"
     assert data["datetime"] == expected_datetime
-    
-    os.remove("./data/test_messages.csv")
-    os.remove("./data/test_contacts.csv")
 
 
 def test_F08_content_encoding():
-    clear_output_dir("output")
-
     test_content = "Hello World"
     messages_csv = f"""id,datetime,direction,content,contact
 6cf156bb-5baa-4113-ade1-f78b8be86862,1770050100,originating,{test_content},1010"""
@@ -197,13 +183,9 @@ def test_F08_content_encoding():
     decoded_content = base64.b64decode(data["content"]).decode('utf-8')
     assert decoded_content == test_content
 
-    os.remove("./data/test_messages.csv")
-    os.remove("./data/test_contacts.csv")
 
 
 def test_F09_contact_resolution():
-    clear_output_dir("output")
-
     messages_csv = """id,datetime,direction,content,contact
 93e1b4ff-e0d7-4ee0-bf66-ee5739f41944,1770064857,originating,Test Message,1110"""
 
@@ -223,13 +205,8 @@ def test_F09_contact_resolution():
 
     assert data["contact"] == "Contact found"
 
-    os.remove("./data/test_messages.csv")
-    os.remove("./data/test_contacts.csv")
-
 
 def test_F10_extra_columns_handling():
-    clear_output_dir("output")
-
     messages_csv = """id,datetime,direction,content,contact,extra_column
 0d52a65b-5baa-4079-ad11-12f75956f2d8,1770066080,originating,Test extra,1011,ignored"""
     
@@ -252,5 +229,3 @@ def test_F10_extra_columns_handling():
 
     assert actual_fields == expected_fields
 
-    os.remove("./data/test_messages.csv")
-    os.remove("./data/test_contacts.csv")
