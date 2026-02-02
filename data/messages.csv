@@ -1,0 +1,3 @@
+id,datetime,direction,content,contact
+1ff8b133-fac6-498c-8a08-23f765d0441c,1617600000,originating,Hello John,1001
+b2a3dde1-9a13-41e5-9abd-f1140ae5ed66,1617603600,destinating,Meeting at 3pm,1002
