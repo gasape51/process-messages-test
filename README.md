@@ -40,6 +40,14 @@ pip install -r requirements.txt
 
 ### 2. Tests de robustesse
 
+| ID  | Objectif                               | Entrée                                                     | Résultat Attendu                                     |
+| --- | -------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------- |
+| R01 | Gestion de fichier manquant (messages) | Chemin vers `messages.csv` inexistant                     | Sortie différente de 0                               |
+| R02 | Gestion de fichier manquant (contacts) | Chemin vers `contacts.csv` inexistant                     | Sortie différente de 0                               |
+| R03 | Paramètre manquant à l'execution     | Absence de l'argument `/output`                           | Sortie                                                |
+| R04 | Fichier `messages.csv` vide          | Fichier contenant uniquement le header                      | Sortie 0, aucun fichiers JSON créé dans `/output` |
+| R05 | Résolution de contact inconnu         | ID contact dans `messages.csv` absent de `contacts.csv` | Sortie différente de 0                               |
+
 ### 3. Tests de performance
 
 ## Résultats
