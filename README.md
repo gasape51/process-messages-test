@@ -37,6 +37,7 @@ pip install -r requirements.txt
 | F08 | Encodage du contenu                              | Champ `content` en texte clair                                                        | Le contenu du message est encodé en base64 dans le JSON                                     |
 | F09 | Résolution du contact                           | Lien entre `messages.contact` et `contacts.id`                                      | Le champ `contact` du JSON affiche le nom du contact (string) et non son ID               |
 | F10 | Présence de colonnes supplémentaires           | Présence de colonnes non spécifiées dans les CSV d'entrée                           | Le programme ignore les colonnes supplémentaires et traite les données normalement          |
+| F11 | Unicité des fichiers                            | `messages.csv` avec 50 messages distincts valides                                    | Création de 50 fichiers JSON distincts dans /`output`                                      |
 
 ### 2. Tests de robustesse
 
