@@ -28,13 +28,18 @@ def load_json_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
 
+def run_process_messages(messages_file, contacts_file, output_dir="output"):
+    """Helper to run the process_messages program"""
+    result = subprocess.run(
+        ["./process_messages", messages_file, contacts_file, output_dir],
+        capture_output=True,
+        text=True
+    )
+    return result
 
 # Test cases
 def test_F01_nominal_execution():
-    result = subprocess.run(
-        ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/messages.csv", "./data/contacts.csv", "output")    
 
     assert result.returncode == 0
     assert os.path.isdir("output")
@@ -44,10 +49,7 @@ def test_F01_nominal_execution():
 
 
 def test_F02_file_uniqueness():
-    result = subprocess.run(
-        ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/messages.csv", "./data/contacts.csv", "output")
 
     assert result.returncode == 0
 
@@ -67,10 +69,8 @@ cd19a0a2-b73c-4ba1-82ae-89d06dc457c5,1770050099,,Test message F03,1001"""
     create_test_csv("./data/test_messages.csv", messages_csv)
     create_test_csv("./data/test_contacts.csv", contacts_csv)
     
-    result = subprocess.run(
-        ["./process_messages", "./data/test_messages.csv", "./data/test_contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
+
     assert result.returncode == 0
     
     json_file = "output/cd19a0a2-b73c-4ba1-82ae-89d06dc457c5.json"
@@ -91,10 +91,8 @@ be5792c2-1c1f-409f-9ac8-27a126efa091,1770050097,originating,Test message F04,100
     create_test_csv("./data/test_messages.csv", messages_csv)
     create_test_csv("./data/test_contacts.csv", contacts_csv)
     
-    result = subprocess.run(
-        ["./process_messages", "./data/test_messages.csv", "./data/test_contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
+
     assert result.returncode == 0
     
     expected_filename = "be5792c2-1c1f-409f-9ac8-27a126efa091.json"
@@ -102,10 +100,8 @@ be5792c2-1c1f-409f-9ac8-27a126efa091,1770050097,originating,Test message F04,100
 
 
 def test_F05_json_structure_integrity():
-    result = subprocess.run(
-        ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/messages.csv", "./data/contacts.csv", "output")
+
     assert result.returncode == 0   
 
     required_fields = ["id", "datetime", "direction", "content", "contact"]
@@ -121,10 +117,8 @@ def test_F05_json_structure_integrity():
 
 
 def test_F06_id_accuracy():
-    result = subprocess.run(
-        ["./process_messages", "./data/messages.csv", "./data/contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/messages.csv", "./data/contacts.csv", "output")
+
     assert result.returncode == 0   
 
     with open("./data/messages.csv", 'r') as f:
@@ -148,10 +142,7 @@ bccfe3e5-f89d-4859-ad53-dea6f556cf28,1770050100,originating,Test message F07,100
     create_test_csv("./data/test_messages.csv", messages_csv)
     create_test_csv("./data/test_contacts.csv", contacts_csv)
 
-    result = subprocess.run(
-        ["./process_messages", "./data/test_messages.csv", "./data/test_contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
     assert result.returncode == 0   
 
     data = load_json_file("output/bccfe3e5-f89d-4859-ad53-dea6f556cf28.json")
@@ -172,10 +163,7 @@ def test_F08_content_encoding():
     create_test_csv("./data/test_messages.csv", messages_csv)
     create_test_csv("./data/test_contacts.csv", contacts_csv)
 
-    result = subprocess.run(
-        ["./process_messages", "./data/test_messages.csv", "./data/test_contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
     assert result.returncode == 0   
 
     data = load_json_file("output/6cf156bb-5baa-4113-ade1-f78b8be86862.json")
@@ -195,10 +183,8 @@ def test_F09_contact_resolution():
     create_test_csv("./data/test_messages.csv", messages_csv)
     create_test_csv("./data/test_contacts.csv", contacts_csv)
 
-    result = subprocess.run(
-        ["./process_messages", "./data/test_messages.csv", "./data/test_contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
+
     assert result.returncode == 0   
 
     data = load_json_file("output/93e1b4ff-e0d7-4ee0-bf66-ee5739f41944.json")
@@ -216,10 +202,8 @@ def test_F10_extra_columns_handling():
     create_test_csv("./data/test_messages.csv", messages_csv)
     create_test_csv("./data/test_contacts.csv", contacts_csv)
 
-    result = subprocess.run(
-        ["./process_messages", "./data/test_messages.csv", "./data/test_contacts.csv", "output"],
-        capture_output=True
-    )
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
+    
     assert result.returncode == 0   
 
     data = load_json_file("output/0d52a65b-5baa-4079-ad11-12f75956f2d8.json")
