@@ -2,7 +2,8 @@ import base64
 import subprocess
 import os
 import shutil
-import json 
+import json
+import uuid 
 import pytest
 
 # Helper functions
@@ -213,3 +214,21 @@ def test_F10_extra_columns_handling():
 
     assert actual_fields == expected_fields
 
+
+def test_F11_max_output_limit():
+    msg_lines = ["id,datetime,direction,content,contact"]
+    nb_messages = 50
+    for i in range(nb_messages):
+        msg_lines.append(f"{str(uuid.uuid4())},1770138198,originating,Message {i},1001")
+    
+    contacts_csv = """id,name
+1001,Test Contact"""
+    
+    create_test_csv("./data/test_messages.csv", "\n".join(msg_lines))
+    create_test_csv("./data/test_contacts.csv", contacts_csv)
+
+    run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
+    
+    generated_files = os.listdir("output")
+    
+    assert len(generated_files) == nb_messages, f"Expected {nb_messages} files created, found {len(generated_files)}"
