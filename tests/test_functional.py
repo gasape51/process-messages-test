@@ -7,7 +7,7 @@ import pytest
 
 # Helper functions
 @pytest.fixture(autouse=True)
-def setup_output_directory():
+def clean_test_artifacts():
     """Helper to clear and recreate output directory before each test"""
     if os.path.exists("output"):
         shutil.rmtree("output")
