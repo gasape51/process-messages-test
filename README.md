@@ -35,7 +35,7 @@ pip install -r requirements.txt
 | F06 | Exactitude de l'identifiant                      | Message avec un UUID v4 spécifique                                                     | Le champ `id` du JSON correspond à l'UUID du CSV                                          |
 | F07 | Conversion du format de date                     | Timestamp UNIX                                                                          | Date convertie en isoformat `YYYY-MM-DDThh:mm:ss`                                          |
 | F08 | Encodage du contenu                              | Champ `content` en texte clair                                                        | Le contenu du message est encodé en base64 dans le JSON                                     |
-| F09 | Résolution du contact                           | Lien entre `messages.contact` et `contacts.id`                                      | Le champ `contact` du JSON affiche le *nom* du contact (string) et non son ID             |
+| F09 | Résolution du contact                           | Lien entre `messages.contact` et `contacts.id`                                      | Le champ `contact` du JSON affiche le nom du contact (string) et non son ID               |
 | F10 | Présence de colonnes supplémentaires           | Présence de colonnes non spécifiées dans les CSV d'entrée                           | Le programme ignore les colonnes supplémentaires et traite les données normalement          |
 
 ### 2. Tests de robustesse
@@ -44,9 +44,16 @@ pip install -r requirements.txt
 | --- | -------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------- |
 | R01 | Gestion de fichier manquant (messages) | Chemin vers `messages.csv` inexistant                     | Sortie différente de 0                               |
 | R02 | Gestion de fichier manquant (contacts) | Chemin vers `contacts.csv` inexistant                     | Sortie différente de 0                               |
-| R03 | Paramètre manquant à l'execution     | Absence de l'argument `/output`                           | Sortie                                                |
+| R03 | Paramètre manquant à l'execution     | Absence de l'argument `/output`                           | Sortie différente de 0 + affichage de l'aide ??     |
 | R04 | Fichier `messages.csv` vide          | Fichier contenant uniquement le header                      | Sortie 0, aucun fichiers JSON créé dans `/output` |
-| R05 | Résolution de contact inconnu         | ID contact dans `messages.csv` absent de `contacts.csv` | Sortie différente de 0                               |
+| R05 | Résolution de contact inconnu         | ID contact dans `messages.csv` absent de `contacts.csv` | Sortie différente de 0 *                             |
+| R06 | Colonne manquante                      | colonne `content` absente                                | Sortie différente de 0                               |
+| R07 | Colonne manquante                      | colonne `datetime` absente                               | Sortie différente de 0                               |
+| R08 | Champ obligatoire manquant             | champ `content` manquant                                  | Sortie différente de 0                               |
+| R09 | Champ obligatoire manquant             | champ `id` manquant                                       | Sortie différente de 0                               |
+| R10 | Champ obligatoire manquant             | champ `datetime` manquant                                 | Sortie différente de 0                               |
+| R11 | Champ obligatoire manquant             | champ `contact` manquant                                  | Sortie différente de 0                               |
+| R12 |                                        |                                                             |                                                       |
 
 ### 3. Tests de performance
 
