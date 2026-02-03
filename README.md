@@ -67,4 +67,13 @@ pip install -r requirements.txt
 
 ### 3. Tests de performance
 
+| ID  | Objectif                   | Entrée                                                                  | Résultat attendu         |
+| --- | -------------------------- | ------------------------------------------------------------------------ | ------------------------- |
+| P01 | petit dataset              | 10 messages, 5 contacts                                                  | Sortie à 0, temps < 1s   |
+| P02 | dataset moyen              | 100 messages, 20 contacts                                                | Sortie à 0, temps < 2s   |
+| P03 | grand dataset              | 1000 messages, 50 contacts                                               | Sortie à 0, temps < 5s   |
+| P04 | très grand dataset        | 5000 messages, 100 contacts                                              | Sortie à 0, aucun crash  |
+| P05 | grand nombre de contacts   | 100 messages, 1000 contacts                                              | Sortie à 0, temps < 5s   |
+| P06 | Stabilité de l'exécution | 100 messages, 1000 contacts, répétés sur 20 executions consécutives | t execution < moyenne*1.5 |
+
 ## Résultats
