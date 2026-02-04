@@ -204,7 +204,8 @@ def test_F10_extra_columns_handling():
     create_test_csv("./data/test_contacts.csv", contacts_csv)
 
     result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
-    
+    print("STDERR:", result.stderr)
+
     assert result.returncode == 0   
 
     data = load_json_file("output/0d52a65b-5baa-4079-ad11-12f75956f2d8.json")
@@ -227,7 +228,7 @@ def test_F11_max_output_limit():
     create_test_csv("./data/test_messages.csv", "\n".join(msg_lines))
     create_test_csv("./data/test_contacts.csv", contacts_csv)
 
-    run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
+    result = run_process_messages("./data/test_messages.csv", "./data/test_contacts.csv", "output")
     
     generated_files = os.listdir("output")
     
