@@ -13,12 +13,25 @@
 
 ```bash
 pip install -r requirements.txt
+# remplacer /path/to/ par le chemin où se trouve le binaire
+cp /path/to/process_messages . 
+chmod +x process_messages
 ```
 
 ## Lancer les tests
 
 ```bash
+# Tous les tests
+pytest -v
 
+# Tests fonctionnels uniquement
+pytest tests/test_functional.py -v
+
+# Tests de robustesse uniquemen
+pytest tests/test_robustness.py -v
+
+# Tests de performance uniquement
+pytest tests/test_performance.py -v # possibilité d'ajouter -s pour afficher les print
 ```
 
 ## Stratégie de test
